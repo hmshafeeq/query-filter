@@ -1,0 +1,22 @@
+{
+  "name": "velitsol/eloquent-filter",
+  "description": "A laravel package to filter eloquent models as per search criteria.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Muhammad Shafeeq",
+      "email": "hmshafeeq@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.6.0",
+    "illuminate/support": "5.4.x"
+  },
+  "autoload": {
+    "psr-4": {
+      "VelitSol\\EloquentFilter\\": "src/"
+    }
+  }
+}
