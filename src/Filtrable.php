@@ -2,9 +2,9 @@
 
 namespace VelitSol\EloquentFilter;
 
-
 trait Filtrable
 {
+
     public static function bootFiltrableTrait()
     {
         $self = new static();
@@ -16,9 +16,6 @@ trait Filtrable
     {
         return new FiltrableQueryBuilder($query);
     }
-
-
-
 }
 
 
