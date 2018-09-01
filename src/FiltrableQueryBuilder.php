@@ -5,20 +5,23 @@ namespace VelitSol\EloquentFilter;
 
 class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
 {
-    protected $filters = [];
+    public $filters = [];
 
     protected $modelRelations = [];
 
     public function filter()
     {
         $model = $this->getModel();
-        collect(request()->all())->filter(function ($value) {
-            return !empty($value);
-        })->each(function ($value, $key) use ($model) {
-            if (isset($this->eagerLoad[$key]) || count($model->{$key}()) > 0) {
+
+        $filters = collect(request()->all())->filter(function ($value) {
+            return !empty($value) || $value == "0";
+        });
+
+        $filters->each(function ($value, $key) use ($model) {
+            if (isset($this->eagerLoad[$key]) || method_exists($model, $key)) {
                 $this->modelRelations[] = $key;
                 foreach ($value as $k => $v) {
-                    if (!empty($v)) {
+                    if (!empty($value) || $value == "0") {
                         list($expression, $name, $condition) = Filter::parse($k, $v);
                         $this->filters[$key][$expression][$name] = $condition;
                     }
@@ -28,6 +31,7 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
                 $this->filters[$expression][$name] = $condition;
             }
         });
+
         return $this;
     }
 
@@ -38,5 +42,15 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
         return parent::get($columns);
     }
 
+
+    public function getParsedFilters()
+    {
+        return $this->filters;
+    }
+
+    public function getModelRelations()
+    {
+        return $this->modelRelations;
+    }
 
 }

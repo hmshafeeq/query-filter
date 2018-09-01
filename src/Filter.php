@@ -8,9 +8,10 @@ abstract class Filter
 
     public static function apply($builder)
     {
-        if (!empty($builder->filters)) {
-            foreach ($builder->filters as $filterKey => $filterValue) {
-                if (in_array($filterKey, $builder->modelRelations)) {
+        $filters = $builder->getParsedFilters();
+        if (!empty($filters)) {
+            foreach ($filters as $filterKey => $filterValue) {
+                if (in_array($filterKey, $builder->getModelRelations())) {
                     foreach ($filterValue as $fK => $fV) {
                         $builder->whereHas($filterKey, function ($q) use ($fK, $fV) {
                             foreach ($fV as $k => $v) {
@@ -33,7 +34,6 @@ abstract class Filter
                 }
             }
         }
-        return $builder;
     }
 
     public static function parse($fn, $fv)
