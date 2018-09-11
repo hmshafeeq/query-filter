@@ -5,9 +5,10 @@ namespace VelitSol\EloquentFilter;
 
 class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
 {
-    public $filters = [];
+    protected $filters = [];
 
     protected $modelRelations = [];
+
 
     public function filter()
     {
@@ -18,17 +19,20 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
         });
 
         $filters->each(function ($value, $key) use ($model) {
+
             if (isset($this->eagerLoad[$key]) || method_exists($model, $key)) {
                 $this->modelRelations[] = $key;
                 foreach ($value as $k => $v) {
                     if (!empty($value) || $value == "0") {
-                        list($expression, $name, $condition) = Filter::parse($k, $v);
-                        $this->filters[$key][$expression][$name] = $condition;
+                        // e.g. where,'job_id',3
+                        list($condition, $name, $val) = Filter::parse($k, $v);
+                        $this->filters[$key][$condition][$name] = $val;
                     }
                 }
             } else {
-                list($expression, $name, $condition) = Filter::parse($key, $value);
-                $this->filters[$expression][$name] = $condition;
+                // e.g. where,'job_id',3
+                list($condition, $name, $val) = Filter::parse($key, $value);
+                $this->filters[$condition][$name] = $val;
             }
         });
 
@@ -37,9 +41,13 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
 
     public function get($columns = ['*'])
     {
-        Filter::apply($this);
+        Filter::applyOnQuery($this);
 
-        return parent::get($columns);
+        $collection = parent::get($columns);
+
+        Filter::applyOnCollection($this, $collection);
+
+        return $collection;
     }
 
 
@@ -52,5 +60,6 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
     {
         return $this->modelRelations;
     }
+
 
 }

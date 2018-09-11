@@ -6,30 +6,66 @@ namespace VelitSol\EloquentFilter;
 abstract class Filter
 {
 
-    public static function apply($builder)
+
+    private static function getProtectedValue($obj, $name)
     {
+        try {
+            $array = (array)$obj;
+            $prefix = chr(0) . '*' . chr(0);
+            return $array[$prefix . $name];
+        } catch (\Exception $e) {
+        }
+        return [];
+    }
+
+    public static function applyOnQuery($builder)
+    {
+
+        $appends = self::getProtectedValue($builder->getModel(), 'appends');
+
         $filters = $builder->getParsedFilters();
         if (!empty($filters)) {
             foreach ($filters as $filterKey => $filterValue) {
                 if (in_array($filterKey, $builder->getModelRelations())) {
                     foreach ($filterValue as $fK => $fV) {
-                        $builder->whereHas($filterKey, function ($q) use ($fK, $fV) {
+                        $builder->whereHas($filterKey, function ($q) use ($fK, $fV, $appends) {
                             foreach ($fV as $k => $v) {
-                                if ($fK == 'whereRaw') {
-                                    $q->{$fK}($v);
-                                } else {
-                                    $q->{$fK}($k, $v);
+                                if (!in_array($k, $appends)) {
+                                    if ($fK == 'whereRaw') {
+                                        $q->{$fK}($v);
+                                    } else {
+                                        $q->{$fK}($k, $v);
+                                    }
                                 }
                             }
                         });
                     }
                 } else {
                     foreach ($filterValue as $k => $v) {
-                        if ($filterKey == 'whereRaw') {
-                            $builder->{$filterKey}($v);
-                        } else {
-                            $builder->{$filterKey}($k, $v);
+                        if (!in_array($k, $appends)) {
+                            if ($filterKey == 'whereRaw') {
+                                $builder->{$filterKey}($v);
+                            } else {
+                                $builder->{$filterKey}($k, $v);
+                            }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    public static function applyOnCollection($builder, $collection)
+    {
+        $appends = self::getProtectedValue($builder->getModel(), 'appends');
+
+        $filters = $builder->getParsedFilters();
+
+        if (!empty($filters)) {
+            foreach ($filters as $filterKey => $filterValue) {
+                foreach ($filterValue as $k => $v) {
+                    if (in_array($k, $appends)) {
+                        $collection->{$filterKey}($k, $v);
                     }
                 }
             }
