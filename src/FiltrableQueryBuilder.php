@@ -5,11 +5,22 @@ namespace VelitSol\EloquentFilter;
 
 class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
 {
+    /***
+     * Filter array
+     * @var array
+     */
     protected $filters = [];
 
+    /***
+     * Model relations which are also required to be filterd
+     * @var array
+     */
     protected $modelRelations = [];
 
-
+    /***
+     * Use request to build filter array
+     * @return $this
+     */
     public function filter()
     {
         $model = $this->getModel();
@@ -39,17 +50,23 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
         return $this;
     }
 
+    /***
+     * Ovveride get method of the eloquent builder
+     * @param array $columns
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|mixed
+     */
     public function get($columns = ['*'])
     {
+        // apply on quries
         Filter::applyOnQuery($this);
 
         $collection = parent::get($columns);
 
-        Filter::applyOnCollection($this, $collection);
+        // apply on collection
+        $collection = Filter::applyOnCollection($this, $collection);
 
         return $collection;
     }
-
 
     public function getParsedFilters()
     {
