@@ -34,7 +34,7 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
             if (isset($this->eagerLoad[$key]) || method_exists($model, $key)) {
                 $this->modelRelations[] = $key;
                 foreach ($value as $k => $v) {
-                    if (!empty($value) || $value == "0") {
+                    if (!empty($v) || $v === 0) {
                         // e.g. where,'job_id',3
                         list($condition, $name, $val) = Filter::parse($k, $v);
                         $this->filters[$key][$condition][$name] = $val;
