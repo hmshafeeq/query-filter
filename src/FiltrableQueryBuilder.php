@@ -25,7 +25,13 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
     {
         $model = $this->getModel();
 
-        $filters = collect(request()->all())->filter(function ($value) {
+        if (request()->has('filters')) {
+            $filterCollection = collect(request()->get('filters'));
+        } else {
+            $filterCollection = request()->all();
+        }
+
+        $filters = collect($filterCollection)->filter(function ($value) {
             return !empty($value) || $value == "0";
         });
 
@@ -47,6 +53,9 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
             }
         });
 
+        // apply filters on query
+        Filter::applyOnQuery($this);
+
         return $this;
     }
 
@@ -57,9 +66,6 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
      */
     public function get($columns = ['*'])
     {
-        // apply on quries
-        Filter::applyOnQuery($this);
-
         $collection = parent::get($columns);
 
         // apply on collection
