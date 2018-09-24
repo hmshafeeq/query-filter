@@ -171,7 +171,10 @@ abstract class Filter
             // key = ab_cd_ef_ for rawWhere from url
             if (substr($fn, -1) == '_') {
                 $fn = substr($fn, 0, -1);
-                $filter = ['whereRaw', $fn, '`' . $fn . '` ' . str_replace('-', ' ', $fv)];
+                if (str_contains($fn, $fv))
+                    $filter = ['whereRaw', $fn, str_replace('-', ' ', $fv)];
+                else
+                    $filter = ['whereRaw', $fn, '`' . $fn . '` ' . str_replace('-', ' ', $fv)];
             } else {
                 // if filter is a 'date', then change the format to Y-m-d
                 if (str_contains($fn, 'date'))
