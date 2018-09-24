@@ -124,18 +124,29 @@ abstract class Filter
             $exclude = false;
             $collection = $collection->filter(function ($item) use ($k, $v, $exclude) {
                 if (!empty($v)) {
+                    $value = data_get($item, $k);
+                    // remove comma in case of numeric value
+                    if (preg_match('/[0-9]+[.,]?[0-9.]*/', data_get($item, $k))) {
+                        $value = str_replace(',', '', $value);
+                        if (!empty($v[0])) {
+                            $v[0] = str_replace('$', '', $v[0]);
+                        }
+                        if (!empty($v[1])) {
+                            $v[1] = str_replace('$', '', $v[1]);
+                        }
+                    }
                     if (is_null($v[0]) && !is_null($v[1])) //beginning open-ended
                     {
-                        return $exclude ? data_get($item, $k) < $v[1] : data_get($item, $k) <= $v[1];
+                        return $exclude ? $value < $v[1] : $value <= $v[1];
                     } else if (!is_null($v[0]) && is_null($v[1])) //end open-ended
                     {
-                        return $exclude ? data_get($item, $k) > $v[0] : data_get($item, $k) >= $v[0];
+                        return $exclude ? $value > $v[0] : $value >= $v[0];
                     } else if (!is_null($v[0]) && !is_null($v[1]) && ($v[0] < $v[1])) //between
                     {
-                        return $exclude ? (data_get($item, $k) > $v[0] && data_get($item, $k) < $v[1])
-                            : (data_get($item, $k) >= $v[0] && data_get($item, $k) <= $v[1]);
+                        return $exclude ? ($value > $v[0] && $value < $v[1])
+                            : ($value >= $v[0] && $value <= $v[1]);
                     } else {
-                        return data_get($item, $k);
+                        return $value;
                     }
                 } else {
                     return data_get($item, $k);
