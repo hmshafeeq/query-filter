@@ -175,8 +175,9 @@ abstract class Filter
 
         if (is_array($fv)) {
             // if filter is a 'date', then change the format to Y-m-d
-            if (str_contains($fn, 'date'))
+            if (str_contains($fn, 'date') || preg_match('/^([0]?[1-9]|[1|2][0-9]|[3][0|1])[.\/-]([0]?[1-9]|[1][0-2])[.\/-]([0-9]{4}|[0-9]{2})$/', trim($fv[0]))) {
                 $fv = [date('Y-m-d', strtotime(trim($fv[0]))), date('Y-m-d', strtotime(trim($fv[1])))];
+            }
             $filter = ['whereBetween', $fn, $fv];
         } else {
             // key = ab_cd_ef_ for rawWhere from url

@@ -66,12 +66,14 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
      */
     public function get($columns = ['*'])
     {
-        $collection = parent::get($columns);
-
-        // apply on collection
-        $collection = Filter::applyOnCollection($this, $collection);
-
-        return $collection;
+        if (count($this->filters) == 0) {
+            return parent::get($columns);
+        } else {
+            $collection = parent::get($columns);
+            // apply on collection - for appended attributes
+            $collection = Filter::applyOnCollection($this, $collection);
+            return $collection;
+        }
     }
 
     public function getParsedFilters()
