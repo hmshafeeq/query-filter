@@ -6,7 +6,7 @@
 ### A laravel package to filter eloquent models and their relationships based on URL query strings.  
 
 ## Introduction
-Suppose we have following two models, related to each other.
+Suppose we have following two models,
 #### User Model 
 ````
 <?php
@@ -136,7 +136,7 @@ composer require velitsol/eloquent-filter
  
 ## Usage
 
-First you need to add Filterable trait and filters attribute to your model as the following :
+First you need to add Filterable trait  to your model as the following :
 
 ```php
 use VelitSol\EloquentFilter;
