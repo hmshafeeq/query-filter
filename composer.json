@@ -1,6 +1,6 @@
 {
   "name": "velitsol/eloquent-filter",
-  "description": "A laravel package to filter eloquent models as per search criteria.",
+  "description": "A laravel package to filter eloquent models and their relationships based on URL query strings.",
   "type": "library",
   "license": "MIT",
   "authors": [
