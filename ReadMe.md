@@ -194,7 +194,7 @@ So query string should look like
 /posts?field_name_='is-null'
 ````
 
-This package also supports filtering on the basis of appended attributes. 
+This package also supports filtering of appended attributes. 
 
 ### TODO
 * Support for lt, gt, lte, gte, neq query strings 
