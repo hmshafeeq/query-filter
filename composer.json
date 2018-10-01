@@ -3,13 +3,19 @@
   "description": "A laravel package to filter eloquent models and their relationships based on URL query strings.",
   "type": "library",
   "license": "MIT",
+  "keywords": [
+    "laravel",
+    "eloquent-filter",
+    "model-filter",
+    "filter",
+    "relation-filter"
+  ],
   "authors": [
     {
       "name": "Muhammad Shafeeq",
       "email": "hmshafeeq@gmail.com"
     }
   ],
-  "minimum-stability": "dev",
   "require": {
     "php": ">=5.6.0",
     "illuminate/support": "5.4.x"
