@@ -5,6 +5,7 @@
   "license": "MIT",
   "keywords": [
     "laravel",
+    "eloquent",
     "eloquent-filter",
     "model-filter",
     "filter",
