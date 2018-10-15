@@ -185,8 +185,13 @@ abstract class Filter
                 $fn = substr($fn, 0, -1);
                 if (str_contains($fn, $fv))
                     $filter = ['whereRaw', $fn, str_replace('-', ' ', $fv)];
-                else
-                    $filter = ['whereRaw', $fn, '`' . $fn . '` ' . str_replace('-', ' ', $fv)];
+                else {
+                    // Remove dashes from  string, only if they are outside of double quotes
+                    // is-null => is null
+                    // is-like-"%0618-603TM BE19%" => is like "%0618-603TM BE19%"
+                    $fv = preg_replace("/-(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/", ' ', $fv);
+                    $filter = ['whereRaw', $fn, '`' . $fn . '` ' . $fv];
+                }
             } else {
                 // if filter is a 'date', then change the format to Y-m-d
                 if (str_contains($fn, 'date'))
