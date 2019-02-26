@@ -3,7 +3,9 @@
 namespace VelitSol\EloquentFilter;
 
 
-class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
+use Illuminate\Database\Eloquent\Builder;
+
+class FiltrableQueryBuilder extends Builder
 {
     /***
      * Filter array
@@ -62,7 +64,7 @@ class FiltrableQueryBuilder extends \Illuminate\Database\Eloquent\Builder
     /***
      * Ovveride get method of the eloquent builder
      * @param array $columns
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|mixed
+     * @return Builder[]|\Illuminate\Database\Eloquent\Collection|mixed
      */
     public function get($columns = ['*'])
     {

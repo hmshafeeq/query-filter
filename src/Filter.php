@@ -169,7 +169,7 @@ abstract class Filter
     {
         // if filter name does not contains a '_' at the end,
         // and value contains a '-' then explode the value by '-' to make it array.
-        if (substr($fn, -1) != '_' && str_contains($fv, '-')) {
+        if (substr($fn, -1) != '_' && preg_match('/^\d{1,9}(-\d{1,9})?$/',$fv)) {
             $fv = explode('-', $fv);
         }
 
