@@ -116,9 +116,9 @@ abstract class Filter
             /**
              * Filter items for the given key where value is between highest and lowest.
              *
-             * @param  string $key
-             * @param  array $values [up, down] limits of in between; null means open end
-             * @param  bool $exclude 'true': > or <; 'false': >= or <=
+             * @param string $key
+             * @param array $values [up, down] limits of in between; null means open end
+             * @param bool $exclude 'true': > or <; 'false': >= or <=
              * @return static
              */
             $exclude = false;
@@ -169,7 +169,7 @@ abstract class Filter
     {
         // if filter name does not contains a '_' at the end,
         // and value contains a '-' then explode the value by '-' to make it array.
-        if (substr($fn, -1) != '_' && preg_match('/^\d{1,9}(-\d{1,9})?$/',$fv)) {
+        if (substr($fn, -1) != '_' && (static::isNumericRange($fv) || static::isDateRange($fv))) {
             $fv = explode('-', $fv);
         }
 
@@ -202,4 +202,22 @@ abstract class Filter
         return $filter;
     }
 
+    private function isDateRange($fv)
+    {
+        $formats = [
+            'm/d/Y' => '/^\d{1,2}\/\d{1,2}\/\d{4}-\d{1,2}\/\d{1,2}\/\d{4}$/',
+            'Y-m-d' => '/^\d{4}\-\d{1,2}\-\d{1,2}-\d{4}\-\d{1,2}\-\d{1,2}$/'
+        ];
+        foreach ($formats as $format) {
+            if (preg_match($format, trim($fv))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function isNumericRange($fv)
+    {
+        return preg_match('/^(\d{1,9}(-)\d{1,9}?)$/', trim($fv));
+    }
 }
