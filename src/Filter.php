@@ -202,11 +202,11 @@ abstract class Filter
         return $filter;
     }
 
-    private function isDateRange($fv)
+    private static function isDateRange($fv)
     {
         $formats = [
-            'm/d/Y' => '/^\d{1,2}\/\d{1,2}\/\d{4}-\d{1,2}\/\d{1,2}\/\d{4}$/',
-            'Y-m-d' => '/^\d{4}\-\d{1,2}\-\d{1,2}-\d{4}\-\d{1,2}\-\d{1,2}$/'
+            'm/d/Y' => '/^\d{1,2}\/\d{1,2}\/\d{4}\s{0,1}-\s{0,1}\d{1,2}\/\d{1,2}\/\d{4}$/',
+            'Y-m-d' => '/^\d{4}\-\d{1,2}\-\d{1,2}\s{0,1}-\s{0,1}\d{4}\-\d{1,2}\-\d{1,2}$/'
         ];
         foreach ($formats as $format) {
             if (preg_match($format, trim($fv))) {
@@ -216,7 +216,7 @@ abstract class Filter
         return false;
     }
 
-    private function isNumericRange($fv)
+    private static function isNumericRange($fv)
     {
         return preg_match('/^(\d{1,9}(-)\d{1,9}?)$/', trim($fv));
     }
