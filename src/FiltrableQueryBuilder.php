@@ -23,14 +23,20 @@ class FiltrableQueryBuilder extends Builder
      * Use request to build filter array
      * @return $this
      */
-    public function filter()
+    public function filter($filters = null)
     {
         $model = $this->getModel();
 
-        if (request()->has('filters')) {
-            $filterCollection = collect(request()->get('filters'));
+        if (empty($filters)) {
+            if (request()->has('filters')) {
+                $filterCollection = collect(request()->get('filters'));
+            } else if (request()->has('filter')) {
+                $filterCollection = collect(request()->get('filter'));
+            } else {
+                $filterCollection = request()->all();
+            }
         } else {
-            $filterCollection = request()->all();
+            $filterCollection = collect($filters);
         }
 
         $filters = collect($filterCollection)->filter(function ($value) {
@@ -50,13 +56,12 @@ class FiltrableQueryBuilder extends Builder
                 }
             } else {
                 // e.g. where,'job_id',3
-                list($condition, $name, $val) = Filter::parse($key, $value);
-                $this->filters[$condition][$name] = $val;
+                $this->filters[] = new Filter($key, $value);
             }
         });
 
         // apply filters on query
-        Filter::applyOnQuery($this);
+        FilterQuery::handle($this);
 
         return $this;
     }
@@ -73,7 +78,7 @@ class FiltrableQueryBuilder extends Builder
         } else {
             $collection = parent::get($columns);
             // apply on collection - for appended attributes
-            $collection = Filter::applyOnCollection($this, $collection);
+            $collection = FilterCollection::handle($this, $collection);
             return $collection;
         }
     }
