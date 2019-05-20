@@ -6,6 +6,7 @@ namespace VelitSol\EloquentFilter;
 abstract class FilterCollection
 {
 
+
     private static $builder;
 
     /***

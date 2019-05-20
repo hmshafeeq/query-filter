@@ -39,7 +39,7 @@ class Filter
         $this->field = self::getField($fns);
         $this->name = self::getName(array_last($fns));
         $this->operator = self::getOperator(array_last($fns));
-        $this->value = self::getValue($_value, array_last($fns));
+        $this->value = self::getValue(trim($_value), array_last($fns));
         $this->relation = self::getRelation($fns);
     }
 
@@ -79,9 +79,24 @@ class Filter
             if (self::isNumericRange($_value)) {
                 $_value = array_map('trim', explode('-', $_value, 2));
             } else if (self::isDateRange($_value)) {
-                $_value = array_map(function ($_v) {
-                    return date('Y-m-d', strtotime(trim($_v)));
-                }, explode('-', $_value, 2));
+                $range = explode('-', $_value, 2);
+                $_value = [
+                    date('Y-m-d 00:00:00', strtotime(trim($range[0]))),
+                    date('Y-m-d 23:59:59', strtotime(trim($range[1])))
+                ];
+            } else {
+                $_value = str_replace('-','',$_value);
+                if (is_numeric($_value)) {
+                    $_value = [
+                        $_value + 0,
+                        $_value + 1
+                    ];
+                } else if ($date = \DateTime::createFromFormat('m/d/Y', $_value)) {
+                    $_value = [
+                        $date->format('Y-m-d 00:00:00'),
+                        $date->format('Y-m-d 23:59:59')
+                    ];
+                }
             }
         } else if (in_array($_key, ['in', 'nin'])) {
             $_value = array_map('trim', explode(',', $_value));
@@ -110,6 +125,6 @@ class Filter
 
     private function isNumericRange($fv)
     {
-        return preg_match('/^[A-Za\s-\sz0-9-]+$/', trim($fv));
+        return preg_match('/^\d+\s*?-\s*?\d+$/', trim($fv));
     }
 }
