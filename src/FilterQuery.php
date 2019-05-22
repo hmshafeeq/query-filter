@@ -57,6 +57,12 @@ abstract class FilterQuery
     {
         if ($filter->name == 'whereRaw') {
             self::$builder->{$filter->name}($filter->value);
+        } else if ($filter->name == 'whereNull') {
+            if ($filter->value) {
+                self::$builder->whereNull($filter->field);
+            } else {
+                self::$builder->whereNotNull($filter->field);
+            }
         } else {
             if (!empty($filter->operator)) {
                 self::$builder->{$filter->name}($filter->field, $filter->operator, $filter->value);
@@ -73,6 +79,12 @@ abstract class FilterQuery
             self::$builder->whereHas($filter->relation, function ($q) use ($filter) {
                 if ($filter->name == 'whereRaw') {
                     $q->{$filter->name}($filter->value);
+                } else if ($filter->name == 'whereNull') {
+                    if ($filter->value) {
+                        $q->whereNull($filter->field);
+                    } else {
+                        $q->whereNotNull($filter->field);
+                    }
                 } else {
                     if (!empty($filter->operator)) {
                         $q->{$filter->name}($filter->field, $filter->operator, $filter->value);

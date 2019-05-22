@@ -75,7 +75,7 @@ abstract class FilterCollection
                     $value = data_get($item, $filter->field);
                     // remove comma in case of numeric value
                     if (preg_match('/[0-9]+[.,]?[0-9.]*/', data_get($item, $filter->field))) {
-                        $value = str_replace(',', '', $value);
+                        $value = str_replace('$', '', str_replace(',', '', $value));
                         if (!empty($filter->value[0])) {
                             $filter->value[0] = str_replace('$', '', $filter->value[0]);
                         }

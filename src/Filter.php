@@ -27,6 +27,7 @@ class Filter
             'nbw' => 'whereNotBetween',
             'in' => 'whereIn',
             'nin' => 'whereNotIn',
+            'isnull'=>'whereNull',
             'rex' => 'has',
         ]
     ];
@@ -77,7 +78,7 @@ class Filter
             }
         } else if (in_array($_key, ['bw', 'nbw'])) {
             if (self::isNumericRange($_value)) {
-                $_value = array_map('trim', explode('-', $_value, 2));
+                $_value = array_map('trim', explode(':', $_value, 2));
             } else if (self::isDateRange($_value)) {
                 $range = explode('-', $_value, 2);
                 $_value = [
@@ -125,6 +126,6 @@ class Filter
 
     private function isNumericRange($fv)
     {
-        return preg_match('/^\d+\s*?-\s*?\d+$/', trim($fv));
+        return preg_match('/[0-9,-]+\s*?:\s*?[0-9,-]+/', trim($fv));
     }
 }

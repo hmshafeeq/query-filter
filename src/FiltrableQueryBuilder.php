@@ -25,8 +25,6 @@ class FiltrableQueryBuilder extends Builder
      */
     public function filter($filters = null)
     {
-        $model = $this->getModel();
-
         if (empty($filters)) {
             if (request()->has('filters')) {
                 $filterCollection = collect(request()->get('filters'));
@@ -43,21 +41,8 @@ class FiltrableQueryBuilder extends Builder
             return !empty($value) || $value == "0";
         });
 
-        $filters->each(function ($value, $key) use ($model) {
-
-            if (isset($this->eagerLoad[$key]) || method_exists($model, $key)) {
-                $this->modelRelations[] = $key;
-                foreach ($value as $k => $v) {
-                    if (!empty($v) || $v === 0) {
-                        // e.g. where,'job_id',3
-                        list($condition, $name, $val) = Filter::parse($k, $v);
-                        $this->filters[$key][$condition][$name] = $val;
-                    }
-                }
-            } else {
-                // e.g. where,'job_id',3
-                $this->filters[] = new Filter($key, $value);
-            }
+        $filters->each(function ($value, $key) {
+            $this->filters[] = new Filter($key, $value);
         });
 
         // apply filters on query
