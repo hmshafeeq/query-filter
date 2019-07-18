@@ -64,7 +64,11 @@ abstract class FilterQuery
                 self::$builder->whereNotNull($filter->field);
             }
         } else {
-            if (!empty($filter->operator)) {
+            if (in_array($filter->method, ['whereNotBetween', 'whereBetween', 'whereNotIn', 'whereIn', 'whereDate', 'whereMonth', 'whereDay', 'whereYear', 'whereTime'])) {
+                self::$builder->{$filter->method}($filter->field, $filter->value);
+            } else if (in_array($filter->method, ['whereNull', 'whereNotNull', 'orWhereNull', 'orWhereNotNull'])) {
+                self::$builder->{$filter->method}($filter->field);
+            } elseif (!empty($filter->operator)) {
                 self::$builder->{$filter->method}($filter->field, $filter->operator, $filter->value);
             } else {
                 self::$builder->{$filter->method}($filter->field, $filter->value);
@@ -86,7 +90,12 @@ abstract class FilterQuery
                         $q->whereNotNull($filter->field);
                     }
                 } else {
-                    if (!empty($filter->operator)) {
+
+                    if (in_array($filter->method, ['whereNotBetween', 'whereBetween', 'whereNotIn', 'whereIn', 'whereDate', 'whereMonth', 'whereDay', 'whereYear', 'whereTime'])) {
+                        $q->{$filter->method}($filter->field, $filter->value);
+                    } else if (in_array($filter->method, ['whereNull', 'whereNotNull', 'orWhereNull', 'orWhereNotNull'])) {
+                        $q->{$filter->method}($filter->field);
+                    } elseif (!empty($filter->operator)) {
                         $q->{$filter->method}($filter->field, $filter->operator, $filter->value);
                     } else {
                         $q->{$filter->method}($filter->field, $filter->value);
