@@ -60,7 +60,7 @@ abstract class FilterCollection
     private static function apply(&$collection, $filter)
     {
         // http://laravel.at.jeffsbox.eu/laravel-5-eloquent-collection-methods-wherebetween
-        if ($filter->name == 'whereBetween') {
+        if ($filter->method == 'whereBetween') {
             /**
              * Filter items for the given key where value is between highest and lowest.
              *
@@ -101,7 +101,7 @@ abstract class FilterCollection
                 }
             });
         } else {
-            $collection = $collection->{$filter->name}($filter->field, $filter->value);
+            $collection = $collection->{$filter->method}($filter->field, $filter->value);
         }
     }
 

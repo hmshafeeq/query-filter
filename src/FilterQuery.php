@@ -55,9 +55,9 @@ abstract class FilterQuery
      */
     private static function applyOnModel($filter)
     {
-        if ($filter->name == 'whereRaw') {
-            self::$builder->{$filter->name}($filter->value);
-        } else if ($filter->name == 'whereNull') {
+        if ($filter->method == 'whereRaw') {
+            self::$builder->{$filter->method}($filter->value);
+        } else if ($filter->method == 'whereNull') {
             if ($filter->value) {
                 self::$builder->whereNull($filter->field);
             } else {
@@ -65,9 +65,9 @@ abstract class FilterQuery
             }
         } else {
             if (!empty($filter->operator)) {
-                self::$builder->{$filter->name}($filter->field, $filter->operator, $filter->value);
+                self::$builder->{$filter->method}($filter->field, $filter->operator, $filter->value);
             } else {
-                self::$builder->{$filter->name}($filter->field, $filter->value);
+                self::$builder->{$filter->method}($filter->field, $filter->value);
             }
         }
     }
@@ -77,9 +77,9 @@ abstract class FilterQuery
         if (!empty($filter->field)) {
             // filtering on relation
             self::$builder->whereHas($filter->relation, function ($q) use ($filter) {
-                if ($filter->name == 'whereRaw') {
-                    $q->{$filter->name}($filter->value);
-                } else if ($filter->name == 'whereNull') {
+                if ($filter->method == 'whereRaw') {
+                    $q->{$filter->method}($filter->value);
+                } else if ($filter->method == 'whereNull') {
                     if ($filter->value) {
                         $q->whereNull($filter->field);
                     } else {
@@ -87,16 +87,16 @@ abstract class FilterQuery
                     }
                 } else {
                     if (!empty($filter->operator)) {
-                        $q->{$filter->name}($filter->field, $filter->operator, $filter->value);
+                        $q->{$filter->method}($filter->field, $filter->operator, $filter->value);
                     } else {
-                        $q->{$filter->name}($filter->field, $filter->value);
+                        $q->{$filter->method}($filter->field, $filter->value);
                     }
                 }
             });
         } else {
             // querying existence or absence or relation
             if ($filter->value == null) {
-                self::$builder->{$filter->name}($filter->relation);
+                self::$builder->{$filter->method}($filter->relation);
             } else {
                 if ($filter->value) {
                     self::$builder->has($filter->relation);

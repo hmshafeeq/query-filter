@@ -5,7 +5,7 @@ namespace VelitSol\EloquentFilter;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class FiltrableQueryBuilder extends Builder
+class FiltrableEloquentBuilder extends Builder
 {
     /***
      * Filter array

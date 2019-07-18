@@ -5,7 +5,7 @@ namespace VelitSol\EloquentFilter;
 
 class Filter
 {
-    public $name;
+    public $method;
     public $operator;
     public $field;
     public $value;
@@ -38,7 +38,7 @@ class Filter
         $fns = explode(':', $_key, 2);
 
         $this->field = self::getField($fns);
-        $this->name = self::getName(array_last($fns));
+        $this->method = self::getMethod(array_last($fns));
         $this->operator = self::getOperator(array_last($fns));
         $this->value = self::getValue(trim($_value), array_last($fns));
         $this->relation = self::getRelation($fns);
@@ -105,7 +105,7 @@ class Filter
         return $_value;
     }
 
-    private function getName($_key)
+    private function getMethod($_key)
     {
         return isset($this->maps['methods'][$_key]) ? $this->maps['methods'][$_key] : 'where';
     }
