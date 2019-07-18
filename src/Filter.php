@@ -11,28 +11,6 @@ class Filter
     public $value;
     public $relation;
 
-    private $maps = [
-        'operators' => [
-            'like' => 'like',
-            'nlike' => 'not like',
-            'eq' => '=',
-            'neq' => '!=',
-            'gte' => '>=',
-            'lte' => '<=',
-            'gt' => '>',
-            'lt' => '<',
-        ],
-        'methods' => [
-            'bw' => 'whereBetween',
-            'nbw' => 'whereNotBetween',
-            'in' => 'whereIn',
-            'nin' => 'whereNotIn',
-            'isnull'=>'whereNull',
-            'rex' => 'has',
-        ]
-    ];
-
-
     public function __construct($_key, $_value)
     {
         $fns = explode(':', $_key, 2);
@@ -42,6 +20,7 @@ class Filter
         $this->operator = self::getOperator(array_last($fns));
         $this->value = self::getValue(trim($_value), array_last($fns));
         $this->relation = self::getRelation($fns);
+
     }
 
     private function getField($fns)
@@ -66,13 +45,13 @@ class Filter
 
     private function getOperator($key)
     {
-        return isset($this->maps['operators'][$key]) ? $this->maps['operators'][$key] : null;
+        return config("filterable.operators.$key", '=');
     }
 
     private function getValue($_value, $_key)
     {
-        if (in_array($_key, $this->maps['operators'])) {
-            $operator = isset($this->maps['operators'][$_key]) ? $this->maps['operators'][$_key] : '';
+        if (in_array($_key, config("filterable.operators"))) {
+            $operator = config("filterable.operators.$_key", '');
             if (str_contains('like', $operator)) {
                 $_value = "%{$_value}%";
             }
@@ -86,7 +65,7 @@ class Filter
                     date('Y-m-d 23:59:59', strtotime(trim($range[1])))
                 ];
             } else {
-                $_value = str_replace('-','',$_value);
+                $_value = str_replace('-', '', $_value);
                 if (is_numeric($_value)) {
                     $_value = [
                         $_value + 0,
@@ -107,7 +86,7 @@ class Filter
 
     private function getMethod($_key)
     {
-        return isset($this->maps['methods'][$_key]) ? $this->maps['methods'][$_key] : 'where';
+        return config("filterable.methods.$_key", 'where');
     }
 
     private function isDateRange($fv)

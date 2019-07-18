@@ -17,7 +17,7 @@ class  FiltrableServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(
             __DIR__.'/../config/filterable.php',
-            'filter'
+            'filterable'
         );
     }
 

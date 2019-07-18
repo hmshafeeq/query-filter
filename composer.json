@@ -25,5 +25,12 @@
     "psr-4": {
       "VelitSol\\EloquentFilter\\": "src/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "VelitSol\\EloquentFilter\\FiltrableServiceProvider"
+      ]
+    }
   }
 }

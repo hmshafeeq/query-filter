@@ -2,7 +2,7 @@
 
 namespace VelitSol\EloquentFilter;
 
-
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 
 class FiltrableEloquentBuilder extends Builder
@@ -23,18 +23,12 @@ class FiltrableEloquentBuilder extends Builder
      * Use request to build filter array
      * @return $this
      */
-    public function filter($filters = null)
+    public function filter()
     {
-        if (empty($filters)) {
-            if (request()->has('filters')) {
-                $filterCollection = collect(request()->get('filters'));
-            } else if (request()->has('filter')) {
-                $filterCollection = collect(request()->get('filter'));
-            } else {
-                $filterCollection = request()->all();
-            }
-        } else {
-            $filterCollection = collect($filters);
+        if (request()->has(config('filterable.array'))) {
+            $filterCollection = collect(request()->get(config('filterable.array')));
+        }  else {
+           throw new Exception("Filterable array is not specified or is missing in request");
         }
 
         $filters = collect($filterCollection)->filter(function ($value) {
