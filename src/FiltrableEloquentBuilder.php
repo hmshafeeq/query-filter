@@ -23,22 +23,19 @@ class FiltrableEloquentBuilder extends Builder
      * Use request to build filter array
      * @return $this
      */
-    public function filter()
+    public function filter($params = [])
     {
-        if (request()->has(config('filterable.array'))) {
-            $filterCollection = collect(request()->get(config('filterable.array')));
-        }  else {
-           throw new Exception("Filterable array is not specified or is missing in request");
+        $params = request()->get(config('filterable.array'), $params);
+
+        if (!empty($params)) {
+            collect($params)->filter(function ($value) {
+                return !empty($value) || $value == "0";
+            })->each(function ($value, $key) {
+                $this->filters[] = new Filter($key, $value);
+            });
+        } else {
+            throw new Exception("Filterable array is not specified or is missing in request");
         }
-
-        $filters = collect($filterCollection)->filter(function ($value) {
-            return !empty($value) || $value == "0";
-        });
-
-        $filters->each(function ($value, $key) {
-            $this->filters[] = new Filter($key, $value);
-        });
-
         // apply filters on query
         FilterQuery::handle($this);
 

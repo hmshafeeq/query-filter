@@ -65,7 +65,6 @@ class Filter
                     date('Y-m-d 23:59:59', strtotime(trim($range[1])))
                 ];
             } else {
-                $_value = str_replace('-', '', $_value);
                 if (is_numeric($_value)) {
                     $_value = [
                         $_value + 0,
