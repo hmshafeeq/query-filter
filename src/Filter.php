@@ -66,9 +66,10 @@ class Filter
                 ];
             } else {
                 if (is_numeric($_value)) {
+                    $isNegative = $_value < 0;
                     $_value = [
-                        $_value + 0,
-                        $_value + 1
+                        ($isNegative ? $_value - 1 : $_value + 0),
+                        ($isNegative ? $_value - 0 : $_value + 1)
                     ];
                 } else if ($date = \DateTime::createFromFormat('m/d/Y', $_value)) {
                     $_value = [

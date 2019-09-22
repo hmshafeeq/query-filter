@@ -36,6 +36,7 @@ class FiltrableEloquentBuilder extends Builder
         } else {
             throw new Exception("Filterable array is not specified or is missing in request");
         }
+
         // apply filters on query
         FilterQuery::handle($this);
 
