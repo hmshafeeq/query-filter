@@ -55,6 +55,9 @@ abstract class FilterQuery
      */
     private static function applyOnModel($filter)
     {
+        if (!str_contains($filter->field, "."))
+            $filter->field = self::$builder->getModel()->getTable() . "." . $filter->field;
+
         if ($filter->method == 'whereRaw') {
             self::$builder->{$filter->method}($filter->value);
         } else if ($filter->method == 'whereNull') {
@@ -81,6 +84,10 @@ abstract class FilterQuery
         if (!empty($filter->field)) {
             // filtering on relation
             self::$builder->whereHas($filter->relation, function ($q) use ($filter) {
+
+                if (!str_contains($filter->field, "."))
+                    $filter->field = $q->getModel()->getTable() . "." . $filter->field;
+
                 if ($filter->method == 'whereRaw') {
                     $q->{$filter->method}($filter->value);
                 } else if ($filter->method == 'whereNull') {
