@@ -44,10 +44,11 @@ return [
     */
     'methods' => [
         'bw' => 'whereBetween',
-        'nbw' => 'whereNotBetween',
+        '!bw' => 'whereNotBetween',
         'in' => 'whereIn',
-        'nin' => 'whereNotIn',
+        '!in' => 'whereNotIn',
         'isnull' => 'whereNull',
+        '!isnull' => 'whereNotNull',
         'rex' => 'has',
     ]
 ];
