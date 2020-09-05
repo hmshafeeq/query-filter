@@ -100,8 +100,15 @@ abstract class FilterCollection
                     return data_get($item, $filter->field);
                 }
             });
-        } else {
-            $collection = $collection->{$filter->method}($filter->field, $filter->value);
+        } else if (!empty($collection)) {
+            if (is_countable($collection[0]->{$filter->field})) {
+                $collection = $collection->filter(function ($v) use ($filter) {
+                    $count = $v->{$filter->field}->count();
+                    return $filter->value == 0 ? $count == 0 : $count > 0;
+                });
+            } else {
+                $collection = $collection->{$filter->method}($filter->field, $filter->value);
+            }
         }
     }
 

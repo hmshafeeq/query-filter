@@ -53,10 +53,10 @@ class Post extends Model
 
 And now we want to return a list of posts filtered by multiple parameters through URL query string. When we navigate to:
 ```
-/posts?score=4&view_count='10-100'&publisher['age']='20-30'&publisher['type']='guest'&created_at='02/02/2018-04/02/2018'
+/posts?filter['score']=4&filter['view_count']='10:100'&filter['publisher.age']='20:30'&filter['publisher.type']='guest'&filter['created_at']='02/02/2018-04/02/2018'
 ```
 
-In controller if we dump `$request->all()`, we will see following parameters:
+In controller if we dump `$request->get('filter')`, we will see following parameters:
 ```php
 [
     score => '4',
@@ -176,28 +176,16 @@ class PostController extends Controller
 
 ##### Range
 ```
-/posts?field_name='start-end'
+/posts?filter['field_name']='start:end'
 ```
 
 ##### Relationships
 ```
-/posts?relationship_name[field_name]=value
+/posts?filter['relationship_name.field_name']=value
 ```
 Or range
 ```
-/posts?relationship_name[field_name]='start-end'
-```
-
-#### Custom
-Sometimes we need to filter data on some status which depends on some other field. In below example, we want to filter all paid items, we don't have `is_paid` boolean field in table, but we do have `paid_at` (date) field which is set when an item is paid. So we can filter on the basis of it's value. For custom filter to work, we need to place `_` at the end of field name.
-```html
-<div>
-    <label for="paid_at">Is Paid</label>
-    <select name="paid_at_" id="paid_at">
-        <option value="is-not-null">Yes</option>
-        <option value="is-null">No</option>
-    </select>
-</div>
+/posts?filter['relationship_name.field_name']='start:end'
 ```
 
 So query string should look like

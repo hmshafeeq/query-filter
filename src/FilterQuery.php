@@ -3,6 +3,8 @@
 namespace VelitSol\EloquentFilter;
 
 
+use Illuminate\Support\Str;
+
 abstract class FilterQuery
 {
 
@@ -55,7 +57,7 @@ abstract class FilterQuery
      */
     private static function applyOnModel($filter)
     {
-        if (!str_contains($filter->field, "."))
+        if (!Str::contains($filter->field, "."))
             $filter->field = self::$builder->getModel()->getTable() . "." . $filter->field;
 
         if ($filter->method == 'whereRaw') {
@@ -85,7 +87,7 @@ abstract class FilterQuery
             // filtering on relation
             self::$builder->whereHas($filter->relation, function ($q) use ($filter) {
 
-                if (!str_contains($filter->field, "."))
+                if (!Str::contains($filter->field, "."))
                     $filter->field = $q->getModel()->getTable() . "." . $filter->field;
 
                 if ($filter->method == 'whereRaw') {

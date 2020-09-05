@@ -1,36 +1,36 @@
 {
-  "name": "velitsol/eloquent-filter",
-  "description": "A laravel package to filter eloquent models and their relationships based on URL query strings.",
-  "type": "library",
-  "license": "MIT",
-  "keywords": [
-    "laravel",
-    "eloquent",
-    "eloquent-filter",
-    "model-filter",
-    "filter",
-    "relation-filter"
-  ],
-  "authors": [
-    {
-      "name": "Muhammad Shafeeq",
-      "email": "hmshafeeq@gmail.com"
+    "name": "velitsol/eloquent-filter",
+    "description": "A laravel package to filter eloquent models and their relationships based on URL query strings.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "eloquent",
+        "eloquent-filter",
+        "model-filter",
+        "filter",
+        "relation-filter"
+    ],
+    "authors": [
+        {
+            "name": "Muhammad Shafeeq",
+            "email": "hmshafeeq@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "illuminate/support": "5.4.x"
+    },
+    "autoload": {
+        "psr-4": {
+            "VelitSol\\EloquentFilter\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "VelitSol\\EloquentFilter\\FiltrableServiceProvider"
+            ]
+        }
     }
-  ],
-  "require": {
-    "php": ">=5.6.0",
-    "illuminate/support": "5.4.x"
-  },
-  "autoload": {
-    "psr-4": {
-      "VelitSol\\EloquentFilter\\": "src/"
-    }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "VelitSol\\EloquentFilter\\FiltrableServiceProvider"
-      ]
-    }
-  }
 }

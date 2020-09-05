@@ -3,6 +3,8 @@
 namespace VelitSol\EloquentFilter;
 
 
+use Illuminate\Support\Str;
+
 class Filter
 {
     public $method;
@@ -25,9 +27,9 @@ class Filter
 
     private function getField($fns)
     {
-        if (str_contains(array_last($fns), ['rex'])) {
+        if (Str::contains(array_last($fns), ['rex'])) {
             return null;
-        } else if (str_contains(array_first($fns), '.')) {
+        } else if (Str::contains(array_first($fns), '.')) {
             return array_last(explode('.', array_first($fns)));
         }
         return array_first($fns);
@@ -35,9 +37,9 @@ class Filter
 
     private function getRelation($fns)
     {
-        if (str_contains(array_last($fns), ['rex'])) {
+        if (Str::contains(array_last($fns), ['rex'])) {
             return array_first($fns);
-        } else if (str_contains(array_first($fns), '.')) {
+        } else if (Str::contains(array_first($fns), '.')) {
             return explode('.', array_first($fns))[0];
         }
         return null;
@@ -52,7 +54,7 @@ class Filter
     {
         if (in_array($_key, config("filterable.operators"))) {
             $operator = config("filterable.operators.$_key", '');
-            if (str_contains('like', $operator)) {
+            if (Str::contains('like', $operator)) {
                 $_value = "%{$_value}%";
             }
         } else if (in_array($_key, ['bw', 'nbw'])) {
